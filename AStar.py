@@ -59,9 +59,6 @@ if __name__ == '__main__':
     # path = AStar(m)
 
     searchPath, aPath, fwdPath = AStar(m)
-    print(searchPath)
-    print("=====", aPath)
-    print("=====", fwdPath)
     a = agent (m,footprints=True, color=COLOR.blue,filled=True)
     b = agent (m,1,1,footprints=True,color=COLOR.yellow,filled=True,goal=(m.rows,m.cols))
     c = agent (m,footprints=True,color=COLOR.red)
