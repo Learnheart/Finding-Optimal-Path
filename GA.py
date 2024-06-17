@@ -30,14 +30,7 @@ def main():
         count += 1
     else:
         exit("Not Found")
-    # if direction[index]:
-    #     m.tracePath({a: generate_path1(population[index])}, showMarked=True)
-    #     m.run()
-    # else:
-    #     m.tracePath({a: generate_path2(population[index])})
-    #     m.run()
 
-        # If a solution is found, print the length of the shortest path
     if direction[index]:
         path = generate_path1(population[index])
     else:
