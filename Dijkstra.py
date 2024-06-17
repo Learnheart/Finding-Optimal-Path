@@ -56,25 +56,26 @@ def dijsktra(m, *h, start=None):
   return fwdPath, visited[m._goal]
 
 if __name__=="__main__":
-  DijMaze = maze(10, 10)
-  DijMaze.CreateMaze()
+  DijMaze = maze(15, 15)
+  DijMaze.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
+  # DijMaze.CreateMaze()
   
-  h1=agent(DijMaze,1,4,color=COLOR.red)
+  # h1=agent(DijMaze,1,4,color=COLOR.red)
   # h2=agent(DijMaze,4,6,color=COLOR.red)
   # h3=agent(DijMaze,4,1,color=COLOR.red)
   # h4=agent(DijMaze,4,2,color=COLOR.red)
   # h5=agent(DijMaze,4,3,color=COLOR.red)
 
-  h1.cost=100
+  # h1.cost=100
   # h2.cost=100
   # h3.cost=100
   # h4.cost=100
   # h5.cost=100
 
-  path,c=dijsktra(DijMaze,h1,start=(6,1))
-  textLabel(DijMaze,'Total Cost',c)
+  path,c=dijsktra(DijMaze)
+  textLabel(DijMaze,'Dijsktra path length:',c)
   
-  a=agent(DijMaze,6,1,color=COLOR.cyan,filled=True,footprints=True)
-  DijMaze.tracePath({a:path})
+  a=agent(DijMaze,color=COLOR.cyan,filled=True,footprints=True)
+  DijMaze.tracePath({a:path}, delay=100)
   
   DijMaze.run()
