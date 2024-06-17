@@ -173,6 +173,4 @@ def is_valid(p1, p2) -> bool:
         return True if m.maze_map[p1]["W"] else False
 
 if __name__ == "__main__":
-    # print(len(list(path_length)))
-    # l = textLabel(m, 'GA Path Length: ', len(list(path_length)))
     main()
