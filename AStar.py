@@ -54,7 +54,7 @@ def AStar(m,start=None):
 
 
 if __name__ == '__main__':
-    m = maze(15,15)
+    m = maze(5,5)
     m.CreateMaze()
     # path = AStar(m)
 
