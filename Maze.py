@@ -45,6 +45,7 @@ class COLOR(Enum):
     green=('green4','pale green')
     blue=('DeepSkyBlue4','DeepSkyBlue2')
     yellow=('yellow2','yellow2')
+    pink=('#FF768B', 'pink')
 
 class agent:
     '''
@@ -309,6 +310,7 @@ class maze:
         self._canvas=None
         self._agents=[]
         self.markCells=[]
+
 
     @property
     def grid(self):
