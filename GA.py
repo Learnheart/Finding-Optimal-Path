@@ -30,12 +30,22 @@ def main():
         count += 1
     else:
         exit("Not Found")
+    # if direction[index]:
+    #     m.tracePath({a: generate_path1(population[index])}, showMarked=True)
+    #     m.run()
+    # else:
+    #     m.tracePath({a: generate_path2(population[index])})
+    #     m.run()
+
+        # If a solution is found, print the length of the shortest path
     if direction[index]:
-        m.tracePath({a: generate_path1(population[index])}, showMarked=True)
-        m.run()
+        path = generate_path1(population[index])
     else:
-        m.tracePath({a: generate_path2(population[index])})
-        m.run()
+        path = generate_path2(population[index])
+    
+    l=textLabel(m,'GA Search Legth', len(path))
+    m.tracePath({a: path}, showMarked=True)
+    m.run()
 
 def check_sol() -> int:
     if 0 in invalid_steps:
