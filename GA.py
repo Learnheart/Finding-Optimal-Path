@@ -12,7 +12,6 @@ pop_size = 500
 m = maze(rows, columns)
 m.CreateMaze(loopPercent=100)
 a = agent(m, footprints=True)
-path_length_result = None
 
 def main():
     generate_population()
@@ -21,7 +20,7 @@ def main():
         create_path()
         find_fitness()
         parent_selection()
-        print(count)
+        # print(count)
         index = check_sol()
         if index:
             break
@@ -37,7 +36,7 @@ def main():
         path = generate_path2(population[index])
     
     l=textLabel(m,'GA Search Legth', len(path))
-    m.tracePath({a: path}, showMarked=True)
+    m.tracePath({a: path}, showMarked=True,delay=100)
     m.run()
 
 def check_sol() -> int:
