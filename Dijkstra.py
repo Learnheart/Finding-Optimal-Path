@@ -1,81 +1,91 @@
 from Maze import maze, agent, COLOR, textLabel
+import timeit
 
-def dijsktra(m, *h, start=None):
-  if start is None:
-    start = (m.rows, m.cols)
+def dijkstra(m, *h, start=None):
+    if start is None:
+        start = (m.rows, m.cols)
     
-  # create obstacle in maze
-  hurdles = [(i.position, i.cost) for i in h]
-  
-  # set init value of node to infinity 
-  unvisited = {n:float('inf') for n in m.grid}
-  unvisited[start] = 0
-  visited = {}
-  revPath = {}
-  
-  while unvisited:
-    currCell = min(unvisited, key = unvisited.get)
-    visited[currCell] = unvisited[currCell]
+    # Create obstacles in the maze
+    hurdles = [(i.position, i.cost) for i in h]
     
-    # stop when get endpoint
-    if currCell==m._goal:
-      break
+    # Set initial value of nodes to infinity
+    unvisited = {n: float('inf') for n in m.grid}
+    unvisited[start] = 0
+    visited = {}
+    revPath = {}
     
-    # movement direction W(<-) N(|^) S(|) E(->)
-    for d in 'EWNS':
-      if m.maze_map[currCell][d]==True:
-        if d == 'E':
-          childCell = (currCell[0], currCell[1] + 1) #move to the right
-        elif d == 'W':
-          childCell = (currCell[0], currCell[1] - 1) #move to left
-        elif d == 'N':
-          childCell = (currCell[0] - 1, currCell[1]) #top
-        elif d == 'S':
-          childCell = (currCell[0] + 1, currCell[1]) #bot
-        if childCell in visited:
-          continue
-        tempDist = unvisited[currCell] + 1
+    while unvisited:
+        currCell = min(unvisited, key=unvisited.get)
+        visited[currCell] = unvisited[currCell]
         
-        # + cost if encouter obstacle
-        for hurdle in hurdles:
-          if hurdle[0]==currCell:
-            tempDist+=hurdle[1]
-            
-        if tempDist < unvisited[childCell]:
-          unvisited[childCell]=tempDist
-          revPath[childCell]=currCell
+        # Stop when reaching the endpoint
+        if currCell == m._goal:
+            break
+        
+        # Movement directions W(<-) N(|^) S(|) E(->)
+        for d in 'EWNS':
+            if m.maze_map[currCell][d] == True:
+                if d == 'E':
+                    childCell = (currCell[0], currCell[1] + 1)  # Move to the right
+                elif d == 'W':
+                    childCell = (currCell[0], currCell[1] - 1)  # Move to the left
+                elif d == 'N':
+                    childCell = (currCell[0] - 1, currCell[1])  # Move to the top
+                elif d == 'S':
+                    childCell = (currCell[0] + 1, currCell[1])  # Move to the bottom
+                if childCell in visited:
+                    continue
+                tempDist = unvisited[currCell] + 1
+                
+                # Add cost if encountering an obstacle
+                for hurdle in hurdles:
+                    if hurdle[0] == currCell:
+                        tempDist += hurdle[1]
+                        
+                if tempDist < unvisited[childCell]:
+                    unvisited[childCell] = tempDist
+                    revPath[childCell] = currCell
 
-    unvisited.pop(currCell)
-  # keep move forward til get the goal
-  fwdPath = {}
-  cell = m._goal
-  while cell != start:
-    fwdPath[revPath[cell]] = cell
-    cell = revPath[cell]
-  
-  return fwdPath, visited[m._goal]
+        unvisited.pop(currCell)
+    
+    # Extract the forward path from revPath
+    fwdPath = {}
+    cell = m._goal
+    while cell != start:
+        prev_cell = revPath.get(cell)
+        if prev_cell is None:
+            break
+        fwdPath[prev_cell] = cell
+        cell = prev_cell
 
-if __name__=="__main__":
-  DijMaze = maze(15, 15)
-  DijMaze.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
-  # DijMaze.CreateMaze()
-  
-  # h1=agent(DijMaze,1,4,color=COLOR.red)
-  # h2=agent(DijMaze,4,6,color=COLOR.red)
-  # h3=agent(DijMaze,4,1,color=COLOR.red)
-  # h4=agent(DijMaze,4,2,color=COLOR.red)
-  # h5=agent(DijMaze,4,3,color=COLOR.red)
+    # Create the search path list
+    searchPath = list(revPath.keys())
 
-  # h1.cost=100
-  # h2.cost=100
-  # h3.cost=100
-  # h4.cost=100
-  # h5.cost=100
+    return searchPath, revPath, fwdPath
 
-  path,c=dijsktra(DijMaze)
-  textLabel(DijMaze,'Dijsktra path length:',c)
-  
-  a=agent(DijMaze,color=COLOR.cyan,filled=True,footprints=True)
-  DijMaze.tracePath({a:path}, delay=100)
-  
-  DijMaze.run()
+if __name__ == "__main__":
+    DijMaze = maze(15, 15)
+    DijMaze.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
+    # DijMaze.CreateMaze()
+    
+    # Define hurdles
+    # h1 = agent(DijMaze, 1, 4, color=COLOR.red)
+
+    # h1.cost = 100
+    
+    time = timeit.timeit(stmt='dijkstra(DijMaze)', number=10, globals=globals())
+    print(f"Dijkstra's algorithm average time over 10 runs: {time:.6f} seconds")
+    
+    searchPath, revPath, fwdPath = dijkstra(DijMaze)
+    
+    a = agent(DijMaze, color=COLOR.cyan, filled=True, footprints=True)
+    c = agent(DijMaze, color=COLOR.red, footprints=True)
+    
+    # Trace paths as lists
+    DijMaze.tracePath({a: searchPath}, delay=100)
+    DijMaze.tracePath({c: list(fwdPath.keys())}, delay=10)
+    
+    textLabel(DijMaze, 'Dijkstra optimal path length:', len(fwdPath) + 1)
+    textLabel(DijMaze, 'Dijkstra search path length:', len(searchPath) + 1)
+    textLabel(DijMaze,'Dijkstra Time',time )
+    DijMaze.run()
