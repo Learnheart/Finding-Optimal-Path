@@ -3,14 +3,15 @@ import random
 from datetime import datetime
 
 class ACO:
-    def __init__(self,maze, start=None, alpha=2, beta=5, num_ants=20, num_iters=30, evaporation_rate=0.1):
+    def __init__(self,maze, start=None, alpha=1, beta=1, num_ants=20, num_iters=30, evaporation_rate=0.1):
         self.maze = maze
-        self.alpha = alpha
-        self.beta = beta
+        self.alpha = alpha  # Pheromone importance
+        self.beta = beta    # Distance priority
         self.num_ants= num_ants
         self.num_iters=num_iters
         self.evaporation_rate = evaporation_rate
         self.pheromone_table = {k: 0 for k in self.maze.maze_map}
+        self.end = self.maze._goal
 
         if start is None:
             self.start=(self.maze.rows, self.maze.cols)
@@ -39,7 +40,6 @@ class ACO:
             prob = ((pheromone ** self.beta) * (tau ** self.alpha)) / den
             prob_check += prob
             temp_list.append((t[0], prob))
-        # ret_list = sorted(temp_list, key=lambda x: x[1], reverse=True)
 
         ret_list = []
         possibilities = random.choices(population=temp_list, weights=[i[1] for i in temp_list], k=10)
@@ -54,12 +54,12 @@ class ACO:
 
         return ret_list
     
-    def get_heuristic(self, startnode, endnode=(1,1)):
+    def get_heuristic(self, startnode, endnode):
         x1 = abs(startnode[0] - endnode[0])
         y1 = abs(startnode[1] - endnode[1])
         return x1 + y1
 
-    def sort_by_probabilities(self, keynode, adjacent_directs): #adjacent_nodes: [(x1,y1), (x2,y2)]
+    def sort_by_probabilities(self, keynode, adjacent_directs):
         new_list = []
         max_tau = float('-inf')
         max_pheromone = float("-inf")
@@ -76,7 +76,7 @@ class ACO:
                 else (keynode[0]+1, keynode[1]) # S
             
             pheromone = self.pheromone_table[node]
-            tau = self.get_heuristic(node) #distance from n to start node
+            tau = self.get_heuristic(node, self.end) 
             max_tau = max(max_tau, tau) 
             max_pheromone = max(max_pheromone, pheromone)
             min_tau = min(min_tau, tau)
@@ -84,11 +84,10 @@ class ACO:
             new_list.append((node, tau, pheromone))
 
         new_list = self.randomize_list(new_list, max_tau, min_tau, max_pheromone, min_pheromone)
-        # print("NEW LIST", new_list)
         return new_list # [((x2,y2),prob2) ,((x1,y1),prob1)]
 
     def find_route(self, node): # to find a route from start to end node [(x1,y1), (x2,y2), (x4,y4), (x5, y5)]
-        adjacent_directs = self.maze.maze_map[node]  ## key: start_key: 0,0
+        adjacent_directs = self.maze.maze_map[node] 
         x = node[0]
         y = node[1]
 
@@ -127,12 +126,10 @@ class ACO:
         best_path = []
         for i in range(self.num_iters):
             all_paths = []
-            for j in range(self.num_ants): #20 ants
+            for j in range(self.num_ants):
                 self.find_route(self.start)
                 self.aco_current_route.append((self.start))
-                # print("1 ant:", grid_world.aco_current_route)
-                self.aco_current_route = self.aco_current_route[::-1] # path from start->end
-                # grid_world.aco_current_route = grid_world.aco_current_route[:-1] # bỏ đi node end
+                self.aco_current_route = self.aco_current_route[::-1]
                 all_paths.append(self.aco_current_route)
                 self.aco_current_route = []
                 self.is_visited = [[0] * self.maze.rows for temp in range(self.maze.cols)]
