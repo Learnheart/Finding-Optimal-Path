@@ -1,5 +1,6 @@
 from Maze import maze, agent, COLOR, textLabel
 import random
+from datetime import datetime
 
 class ACO:
     def __init__(self,maze, start=None, alpha=2, beta=5, num_ants=20, num_iters=30, evaporation_rate=0.1):
@@ -153,14 +154,25 @@ if __name__ == '__main__':
     m.CreateMaze()
     # print(m.maze_map)
 
+    start_time = datetime.now()
+    start_timestamp = datetime.timestamp(start_time)
+
     model = ACO(m)
     # print(model.pheromone_table)
+    
     shortest = model.run()
+    end_time = datetime.now()
+    end_timestamp = datetime.timestamp(end_time)
+    compute_time = end_timestamp - start_timestamp
+    print(compute_time)
+
     print(shortest)
     print(len(shortest))
 
     a = agent(m,color=COLOR.pink,filled=True,footprints=True)
     m.tracePath({a:shortest},delay=100)
     l = textLabel(m,'ACO Path Length: ', len(shortest))
+    l = textLabel(m,'Computing time: ', compute_time)
+
 
     m.run()
