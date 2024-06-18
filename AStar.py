@@ -1,5 +1,6 @@
 from queue import PriorityQueue
 from Maze import maze, agent, COLOR, textLabel
+import time
 
 def h(cell1,cell2):
     x1,y1=cell1
@@ -55,10 +56,14 @@ def AStar(m,start=None):
 
 if __name__ == '__main__':
     m = maze(5,5)
-    m.CreateMaze()
+    m.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
     # path = AStar(m)
-
+    
+    start_time = time.time()
     searchPath, aPath, fwdPath = AStar(m)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+
     a = agent (m,footprints=True, color=COLOR.blue,filled=True)
     b = agent (m,1,1,footprints=True,color=COLOR.yellow,filled=True,goal=(m.rows,m.cols))
     c = agent (m,footprints=True,color=COLOR.red)
@@ -69,5 +74,6 @@ if __name__ == '__main__':
     
     l = textLabel(m,'AStar Path Length', len(fwdPath)+1)
     l=textLabel(m,'A Star Search Legth', len(searchPath))
+    l = textLabel(m, 'A Star Execution Time (s)', round(elapsed_time, 4))
 
     m.run()
