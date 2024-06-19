@@ -9,7 +9,7 @@ population, direction, fitness = [], [], []
 rows, columns = 15, 15
 fitness_threshold = (0)
 mutation_rate = (1)
-pop_size = 100
+pop_size = 500
 m = maze(rows, columns)
 m.CreateMaze(loopPercent=100)
 a = agent(m, footprints=True)
@@ -18,7 +18,7 @@ def main():
     generate_population()
     count = 0
     start_time = time.time()
-    while count < 1000:
+    while count < 3000:
         create_path()
         find_fitness()
         parent_selection()
@@ -39,7 +39,7 @@ def main():
     else:
         path = generate_path2(population[index])
     l=textLabel(m,'GA Search Legth', len(path))
-    m.tracePath({a: path}, showMarked=True,delay=50)
+    m.tracePath({a: path}, showMarked=True,delay= 50)
     textLabel(m, 'GA Search Time', f'{elapsed_time:.4f} seconds') 
     m.run()
 
@@ -77,6 +77,7 @@ def create_path() -> None:
             invalid_steps.append(count)
             path_length.append(len(path))
 
+
 def find_fitness() -> None:
     fitness.clear()
     wl, wt, wf = 2, 2, 3
@@ -104,6 +105,7 @@ def parent_selection() -> None:
         list(num_turns),
     )
 
+
 def check_sol() -> int:
     if 0 in invalid_steps:
         ind = invalid_steps.index(0)
@@ -126,6 +128,7 @@ def mutation() -> None:
     for i in range(0, pop_size, mutation_rate):
         population[i][randint(1, columns - 2)] = randint(0, rows - 1)
         direction[i] = randint(0, 1)
+
 
 def generate_path1(s) -> list:
     path = []
