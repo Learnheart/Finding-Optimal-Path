@@ -48,55 +48,13 @@ def main():
     m.tracePath({a: path}, showMarked=True,delay=100)
     m.run()
 
-def check_sol() -> int:
-    if 0 in invalid_steps:
-        ind = invalid_steps.index(0)
-        return ind if fitness[ind] >= fitness_threshold else 0
-    else:
-        return 0
-
-def find_fitness() -> None:
-    fitness.clear()
-    wl, wt, wf = 2, 2, 3
-    Smin, Lmin, Tmin = min(invalid_steps), min(path_length), min(num_turns)
-    Smax, Lmax, Tmax = max(invalid_steps), max(path_length), max(num_turns)
-    for i in range(pop_size):
-        S = invalid_steps[i]
-        T = num_turns[i]
-        L = path_length[i]
-        ff = 1 - ((S - Smin) / (Smax - Smin))
-        fl = 1 - ((L - Lmin) / (Lmax - Lmin))
-        ft = 1 - ((T - Tmin) / (Tmax - Tmin))
-        f = ((float)(100 * wf * ff) * ((wl * fl) + (wt * ft))) / (wl + wt)
-        fitness.append(f)
-
-def crossover() -> None:
-    offset = pop_size // 2
-    for i in range(0, offset, 2):
-        crossover_pt = randint(2, columns - 2)
-        population[i + offset] = (
-            population[i][:crossover_pt] + population[i + 1][crossover_pt:]
-        )
-        population[i + offset + 1] = (
-            population[i + 1][:crossover_pt] + population[i][crossover_pt:]
-        )
-
-def mutation() -> None:
-    for i in range(0, pop_size, mutation_rate):
-        population[i][randint(1, columns - 2)] = randint(0, rows - 1)
-        direction[i] = randint(0, 1)
-
-def parent_selection() -> None:
-    global fitness, population, direction, invalid_steps, path_length, num_turns
-    zipped = zip(fitness, population, direction, invalid_steps, path_length, num_turns)
-    zipped = sorted(zipped, key=lambda x: (-x[0], x[3]))
-    fitness, population, direction, invalid_steps, path_length, num_turns = zip(*zipped)
-    fitness, population, direction = list(fitness), list(population), list(direction)
-    invalid_steps, path_length, num_turns = (
-        list(invalid_steps),
-        list(path_length),
-        list(num_turns),
-    )
+def generate_population() -> None:
+    global population, direction
+    population = [
+        [0] + [randint(0, rows - 1) for _ in range(columns - 2)] + [rows - 1]
+        for _ in range(pop_size)
+    ]
+    direction = [randint(0, 1) for _ in range(pop_size)]
 
 def create_path() -> None:
     invalid_steps.clear()
@@ -125,13 +83,54 @@ def create_path() -> None:
             invalid_steps.append(count)
             path_length.append(len(path))
 
-def generate_population() -> None:
-    global population, direction
-    population = [
-        [0] + [randint(0, rows - 1) for _ in range(columns - 2)] + [rows - 1]
-        for _ in range(pop_size)
-    ]
-    direction = [randint(0, 1) for _ in range(pop_size)]
+def find_fitness() -> None:
+    fitness.clear()
+    wl, wt, wf = 2, 2, 3
+    Smin, Lmin, Tmin = min(invalid_steps), min(path_length), min(num_turns)
+    Smax, Lmax, Tmax = max(invalid_steps), max(path_length), max(num_turns)
+    for i in range(pop_size):
+        S = invalid_steps[i]
+        T = num_turns[i]
+        L = path_length[i]
+        ff = 1 - ((S - Smin) / (Smax - Smin))
+        fl = 1 - ((L - Lmin) / (Lmax - Lmin))
+        ft = 1 - ((T - Tmin) / (Tmax - Tmin))
+        f = ((float)(100 * wf * ff) * ((wl * fl) + (wt * ft))) / (wl + wt)
+        fitness.append(f)
+
+def parent_selection() -> None:
+    global fitness, population, direction, invalid_steps, path_length, num_turns
+    zipped = zip(fitness, population, direction, invalid_steps, path_length, num_turns)
+    zipped = sorted(zipped, key=lambda x: (-x[0], x[3]))
+    fitness, population, direction, invalid_steps, path_length, num_turns = zip(*zipped)
+    fitness, population, direction = list(fitness), list(population), list(direction)
+    invalid_steps, path_length, num_turns = (
+        list(invalid_steps),
+        list(path_length),
+        list(num_turns),
+    )
+
+def check_sol() -> int:
+    if 0 in invalid_steps:
+        ind = invalid_steps.index(0)
+        return ind if fitness[ind] >= fitness_threshold else 0
+    else:
+        return 0
+def crossover() -> None:
+    offset = pop_size // 2
+    for i in range(0, offset, 2):
+        crossover_pt = randint(2, columns - 2)
+        population[i + offset] = (
+            population[i][:crossover_pt] + population[i + 1][crossover_pt:]
+        )
+        population[i + offset + 1] = (
+            population[i + 1][:crossover_pt] + population[i][crossover_pt:]
+        )
+
+def mutation() -> None:
+    for i in range(0, pop_size, mutation_rate):
+        population[i][randint(1, columns - 2)] = randint(0, rows - 1)
+        direction[i] = randint(0, 1)
 
 def generate_path1(s) -> list:
     path = []
@@ -150,7 +149,6 @@ def generate_path1(s) -> list:
     path.append((rows, columns))
     path.reverse()
     return path
-
 
 def generate_path2(s) -> list:
     path = [(1, 1)]
