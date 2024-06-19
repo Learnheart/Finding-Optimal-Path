@@ -56,7 +56,7 @@ def AStar(m,start=None):
 
 if __name__ == '__main__':
     m = maze(5,5)
-    m.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
+    m.CreateMaze(loadMaze='15x15.csv')
     # path = AStar(m)
     
     start_time = time.time()

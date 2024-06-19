@@ -85,7 +85,7 @@ if __name__ == "__main__":
     DijMaze.tracePath({a: searchPath}, delay=100)
     DijMaze.tracePath({c: list(fwdPath.keys())}, delay=10)
     
-    textLabel(DijMaze, 'Dijkstra optimal path length:', len(fwdPath) + 1)
-    textLabel(DijMaze, 'Dijkstra search path length:', len(searchPath) + 1)
+    textLabel(DijMaze, 'Dijkstra optimal path length:', len(fwdPath))
+    textLabel(DijMaze, 'Dijkstra search path length:', len(searchPath))
     textLabel(DijMaze,'Dijkstra Time',time )
     DijMaze.run()
