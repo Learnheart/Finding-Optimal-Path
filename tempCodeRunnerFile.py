@@ -1,1 +1,1 @@
-, showMarked=True
+m.CreateMaze(loopPercent=100)

@@ -5,14 +5,13 @@ from sys import exit
 invalid_steps, path_length, num_turns = [], [], []
 population, direction, fitness = [], [], []
 
-rows, columns = 10, 10
+rows, columns = 15, 15
 fitness_threshold = (0)
 mutation_rate = (1)
 pop_size = 500
 m = maze(rows, columns)
 m.CreateMaze(loopPercent=100)
 a = agent(m, footprints=True)
-
 
 def main():
     generate_population()

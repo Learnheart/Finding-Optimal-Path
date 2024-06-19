@@ -148,7 +148,7 @@ class ACO:
 
 if __name__ == '__main__':
     m = maze(15,15)
-    m.CreateMaze()
+    m.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
     # print(m.maze_map)
 
     start_time = datetime.now()

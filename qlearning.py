@@ -1,13 +1,10 @@
 import random
 import numpy as np
 from Maze import maze, agent, COLOR, textLabel
-
-def q_learning(m, *h, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0.1):
+import timeit
+def q_learning(m, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0.1, max_steps=1000):
     if start is None:
         start = (m.rows, m.cols)
-
-    # Create obstacles in the maze
-    hurdles = [(i.position, i.cost) for i in h]
 
     # Initialize the Q-table
     Q = {}
@@ -22,10 +19,16 @@ def q_learning(m, *h, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0
         'S': (1, 0)
     }
 
+    first_episode_Q = None
+    last_episode_reward = 0  # Initialize reward for the last episode
+
     # Train the agent over a number of episodes
-    for _ in range(episodes):
+    for episode in range(episodes):
         currCell = start
-        while currCell != m._goal:
+        episode_reward = 0  # Initialize reward for the current episode
+        steps = 0  # Count steps in each episode
+        while currCell != m._goal and steps < max_steps:  # Avoid infinite loops
+            steps += 1
             if random.uniform(0, 1) < epsilon:
                 # Explore: choose a random action
                 action = random.choice(list(actions.keys()))
@@ -37,9 +40,10 @@ def q_learning(m, *h, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0
                 nextCell = (currCell[0] + actions[action][0], currCell[1] + actions[action][1])
 
                 reward = -1  # Default reward for each step
-                for hurdle in hurdles:
-                    if hurdle[0] == nextCell:
-                        reward -= hurdle[1]  # Add hurdle cost to the reward
+                if nextCell == m._goal:
+                    reward += 100  # Reward for reaching the goal
+
+                episode_reward += reward  # Accumulate the episode reward
 
                 # Update Q-value
                 old_q_value = Q[currCell][action]
@@ -49,7 +53,18 @@ def q_learning(m, *h, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0
 
                 currCell = nextCell
             else:
-                Q[currCell][action] = -1000  # Penalize invalid actions
+                Q[currCell][action] = -100  # Penalize invalid actions
+
+        if episode == 0:
+            # Capture Q-values at the end of the first episode
+            first_episode_Q = {k: v.copy() for k, v in Q.items()}
+
+        if episode == episodes - 1:
+            last_episode_reward = episode_reward  # Track the reward for the last episode
+
+        # Logging
+        if episode % 100 == 0:
+            print(f"Episode {episode}: Last reward = {episode_reward}")
 
     # Generate the forward path using the learned Q-values
     fwdPath = {}
@@ -60,29 +75,29 @@ def q_learning(m, *h, start=None, episodes=1000, alpha=0.1, gamma=0.9, epsilon=0
         fwdPath[currCell] = nextCell
         currCell = nextCell
 
-    return fwdPath, Q[start][max(Q[start], key=Q[start].get)]
+    return fwdPath, last_episode_reward, first_episode_Q, Q
 
 # Note: `m` should be an instance of the maze with necessary attributes like grid, maze_map, _goal, rows, and cols.
 if __name__ == "__main__":
-    m = maze(10, 10)
+    m = maze(15, 15)
     m.CreateMaze()
 
-    h1 = agent(m, 1, 4, color=COLOR.red)
-    # h2=agent(DijMaze,4,6,color=COLOR.red)
-    # h3=agent(DijMaze,4,1,color=COLOR.red)
-    # h4=agent(DijMaze,4,2,color=COLOR.red)
-    # h5=agent(DijMaze,4,3,color=COLOR.red)
+    path, last_episode_reward, first_episode_Q, last_episode_Q = q_learning(m, start=(15,15))
+    textLabel(m,"Reward", last_episode_reward)
+    textLabel(m, 'Q-learning optimal path length:', len(path) + 1)
+    time = timeit.timeit(stmt='q_learning(m)', number=10, globals=globals())
+    print(f"QLearning's algorithm average time over 10 runs: {time:.6f} seconds")
 
-    h1.cost = 100
-    # h2.cost=100
-    # h3.cost=100
-    # h4.cost=100
-    # h5.cost=100
+    # Print Q-values
+    print("Q-values at the end of the first episode:")
+    for state, actions in first_episode_Q.items():
+        print(f"{state}: {actions}")
 
-    path, c = q_learning(m, h1, start=(10,10))
-    textLabel(m, 'Total Cost', c)
+    print("\nQ-values at the end of the last episode:")
+    for state, actions in last_episode_Q.items():
+        print(f"{state}: {actions}")
 
-    a = agent(m, 10, 10, color=COLOR.cyan, filled=True, footprints=True)
+    a = agent(m, 15, 15, color=COLOR.cyan, filled=True, footprints=True)
     m.tracePath({a: path})
 
     m.run()
