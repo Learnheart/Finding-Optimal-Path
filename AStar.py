@@ -68,9 +68,9 @@ if __name__ == '__main__':
     b = agent (m,1,1,footprints=True,color=COLOR.yellow,filled=True,goal=(m.rows,m.cols))
     c = agent (m,footprints=True,color=COLOR.red)
 
-    m.tracePath({a:searchPath},delay=100)
-    m.tracePath({b:aPath},delay=100)
-    m.tracePath({c:fwdPath},delay=100)
+    m.tracePath({a:searchPath},delay=50)
+    m.tracePath({b:aPath},delay=50)
+    m.tracePath({c:fwdPath},delay=50)
     
     l = textLabel(m,'AStar Path Length', len(fwdPath)+1)
     l=textLabel(m,'A Star Search Legth', len(searchPath))

@@ -6,7 +6,7 @@ import time
 invalid_steps, path_length, num_turns = [], [], []
 population, direction, fitness = [], [], []
 
-rows, columns = 10, 10
+rows, columns = 15, 15
 fitness_threshold = (0)
 mutation_rate = (1)
 pop_size = 100
@@ -39,7 +39,7 @@ def main():
     else:
         path = generate_path2(population[index])
     l=textLabel(m,'GA Search Legth', len(path))
-    m.tracePath({a: path}, showMarked=True,delay=100)
+    m.tracePath({a: path}, showMarked=True,delay=50)
     textLabel(m, 'GA Search Time', f'{elapsed_time:.4f} seconds') 
     m.run()
 

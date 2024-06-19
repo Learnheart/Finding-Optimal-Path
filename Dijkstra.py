@@ -65,7 +65,7 @@ def dijkstra(m, *h, start=None):
 
 if __name__ == "__main__":
     DijMaze = maze(15, 15)
-    DijMaze.CreateMaze(loadMaze='maze--2024-06-12--12-12-39.csv')
+    DijMaze.CreateMaze(loadMaze='15x15.csv')
     # DijMaze.CreateMaze()
     
     # Define hurdles
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     # h1.cost = 100
     
     time = timeit.timeit(stmt='dijkstra(DijMaze)', number=10, globals=globals())
-    print(f"Dijkstra's algorithm average time over 10 runs: {time:.6f} seconds")
+    print(f"Dijkstra's algorithm average time over 10 runs: {time:.4f} seconds")
     
     searchPath, revPath, fwdPath = dijkstra(DijMaze)
     
@@ -82,8 +82,8 @@ if __name__ == "__main__":
     c = agent(DijMaze, color=COLOR.red, footprints=True)
     
     # Trace paths as lists
-    DijMaze.tracePath({a: searchPath}, delay=100)
-    DijMaze.tracePath({c: list(fwdPath.keys())}, delay=10)
+    DijMaze.tracePath({a: searchPath}, delay=50)
+    DijMaze.tracePath({c: list(fwdPath.keys())}, delay=50)
     
     textLabel(DijMaze, 'Dijkstra optimal path length:', len(fwdPath))
     textLabel(DijMaze, 'Dijkstra search path length:', len(searchPath))

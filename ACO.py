@@ -172,7 +172,7 @@ if __name__ == '__main__':
     print(len(shortest))
 
     a = agent(m,color=COLOR.pink,filled=True,footprints=True)
-    m.tracePath({a:shortest},delay=100)
+    m.tracePath({a:shortest},delay=50)
     l = textLabel(m,'ACO Path Length: ', len(shortest))
     l = textLabel(m,'Computing time: ', compute_time)
 

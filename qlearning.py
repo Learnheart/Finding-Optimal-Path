@@ -98,6 +98,6 @@ if __name__ == "__main__":
         print(f"{state}: {actions}")
 
     a = agent(m, 15, 15, color=COLOR.cyan, filled=True, footprints=True)
-    m.tracePath({a: path})
+    m.tracePath({a: path}, delay=50)
 
     m.run()
