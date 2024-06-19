@@ -3,7 +3,7 @@ import random
 from datetime import datetime
 
 class ACO:
-    def __init__(self,maze, start=None, alpha=1, beta=1, num_ants=20, num_iters=30, evaporation_rate=0.1):
+    def __init__(self,maze, start=None, alpha=1, beta=1, num_ants=3, num_iters=3, evaporation_rate=0.1):
         self.maze = maze
         self.alpha = alpha  # Pheromone importance
         self.beta = beta    # Distance priority
