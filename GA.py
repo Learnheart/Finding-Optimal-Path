@@ -5,18 +5,14 @@ from sys import exit
 invalid_steps, path_length, num_turns = [], [], []
 population, direction, fitness = [], [], []
 
-rows, columns = 15, 15
+rows, columns = 10, 10
 fitness_threshold = (0)
 mutation_rate = (1)
-pop_size = 500 
+pop_size = 500
 m = maze(rows, columns)
 m.CreateMaze(loopPercent=100)
-<<<<<<< Updated upstream
 a = agent(m, footprints=True)
-=======
-a = agent(m, footprints=True,color=COLOR.blue)
-path_length_result = None
->>>>>>> Stashed changes
+
 
 def main():
     generate_population()
@@ -25,7 +21,6 @@ def main():
         create_path()
         find_fitness()
         parent_selection()
-        # print(count)
         index = check_sol()
         if index:
             break
@@ -34,11 +29,7 @@ def main():
         count += 1
     else:
         exit("Not Found")
-<<<<<<< Updated upstream
 
-=======
-   
->>>>>>> Stashed changes
     if direction[index]:
         path = generate_path1(population[index])
     else:
@@ -50,8 +41,7 @@ def main():
 
 def generate_population() -> None:
     global population, direction
-    population = [
-        [0] + [randint(0, rows - 1) for _ in range(columns - 2)] + [rows - 1]
+    population = [[0] + [randint(0, rows - 1) for _ in range(columns - 2)] + [rows - 1]
         for _ in range(pop_size)
     ]
     direction = [randint(0, 1) for _ in range(pop_size)]
@@ -83,6 +73,7 @@ def create_path() -> None:
             invalid_steps.append(count)
             path_length.append(len(path))
 
+
 def find_fitness() -> None:
     fitness.clear()
     wl, wt, wf = 2, 2, 3
@@ -110,12 +101,14 @@ def parent_selection() -> None:
         list(num_turns),
     )
 
+
 def check_sol() -> int:
     if 0 in invalid_steps:
         ind = invalid_steps.index(0)
         return ind if fitness[ind] >= fitness_threshold else 0
     else:
         return 0
+
 def crossover() -> None:
     offset = pop_size // 2
     for i in range(0, offset, 2):
@@ -131,6 +124,7 @@ def mutation() -> None:
     for i in range(0, pop_size, mutation_rate):
         population[i][randint(1, columns - 2)] = randint(0, rows - 1)
         direction[i] = randint(0, 1)
+
 
 def generate_path1(s) -> list:
     path = []
