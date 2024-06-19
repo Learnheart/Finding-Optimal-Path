@@ -163,6 +163,11 @@ if __name__ == '__main__':
     compute_time = end_timestamp - start_timestamp
     print(compute_time)
 
+    # import timeit
+    # time = timeit.timeit(stmt='model.run()', number=10, globals=globals())
+    # print(f"ACO's algorithm average time over 10 runs: {time:.6f} seconds")
+
+
     print(shortest)
     print(len(shortest))
 
